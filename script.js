@@ -1,39 +1,38 @@
-// Array of sound names
-var sounds = ['applause', 'boo', 'gasp', 'tada', 'victory', 'wrong', 'stop'];
+ const sounds = ["applause", "boo", "gasp", "tada", "victory", "wrong"]; 
+        const buttonsContainer = document.getElementById("buttons");
 
-// Get the buttons div
-var buttonsDiv = document.getElementById('buttons');
+        // Store audio elements to control playback
+        let audioElements = {};
 
-// Check if buttonsDiv exists to avoid errors
-if (!buttonsDiv) {
-    console.error("Error: 'buttons' container not found.");
-} else {
-    // Create a button for each sound
-    for (var i = 0; i < sounds.length; i++) {
-        var btn = document.createElement('button');
-        btn.className = sounds[i] === 'stop' ? 'stop' : 'btn'; // Assign 'stop' class for stop button
-        btn.innerText = sounds[i];
+        // Create buttons dynamically
+        sounds.forEach(sound => {
+            const button = document.createElement("button");
+            button.className = "btn";
+            button.innerText = sound;
 
-        // Create audio element
-        var audio = new Audio(`sounds/${sounds[i]}.mp3`);
+            // Create an audio element
+            const audio = new Audio(`sounds/${sound}.mp3`);
+            audioElements[sound] = audio;
 
-        // Add event listener to play sound when button is clicked
-        btn.addEventListener('click', function(audioFile) {
-            return function() {
-                stopAllSounds(); // Stop other sounds before playing
-                audioFile.play();
-            };
-        }(audio));
+            button.addEventListener("click", () => {
+                stopAllSounds();
+                audio.play();
+            });
 
-        // Add button to buttons div
-        buttonsDiv.appendChild(btn);
-    }
-}
+            buttonsContainer.appendChild(button);
+        });
 
-// Function to stop all sounds
-function stopAllSounds() {
-    document.querySelectorAll("audio").forEach(audio => {
-        audio.pause();
-        audio.currentTime = 0;
-    });
-}
+        // Stop button
+        const stopButton = document.createElement("button");
+        stopButton.className = "stop";
+        stopButton.innerText = "stop";
+
+        stopButton.addEventListener("click", stopAllSounds);
+        buttonsContainer.appendChild(stopButton);
+
+        function stopAllSounds() {
+            Object.values(audioElements).forEach(audio => {
+                audio.pause();
+                audio.currentTime = 0;
+            });
+        }
