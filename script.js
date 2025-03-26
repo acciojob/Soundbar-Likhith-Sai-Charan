@@ -1,37 +1,34 @@
-document.addEventListener("DOMContentLoaded", () => {
-    const sounds = ['applause', 'boo', 'gasp', 'tada', 'victory', 'wrong'];
-    const buttonsDiv = document.getElementById("buttons");
+// Array of sound names
+var sounds = ['applause', 'boo', 'gasp', 'tada', 'victory', 'wrong', 'stop'];
 
-    if (!buttonsDiv) {
-        console.error("Error: 'buttons' container not found.");
-        return;
-    }
+// Get the buttons div
+var buttonsDiv = document.getElementById('buttons');
 
-    // Create buttons dynamically
-    sounds.forEach(sound => {
-        const btn = document.createElement("button");
-        btn.classList.add("btn");
-        btn.innerText = sound;
+// Check if buttonsDiv exists to avoid errors
+if (!buttonsDiv) {
+    console.error("Error: 'buttons' container not found.");
+} else {
+    // Create a button for each sound
+    for (var i = 0; i < sounds.length; i++) {
+        var btn = document.createElement('button');
+        btn.className = sounds[i] === 'stop' ? 'stop' : 'btn'; // Assign 'stop' class for stop button
+        btn.innerText = sounds[i];
 
-        const audio = new Audio(`sounds/${sound}.mp3`);
+        // Create audio element
+        var audio = new Audio(`sounds/${sounds[i]}.mp3`);
 
-        btn.addEventListener("click", () => {
-            stopAllSounds(); // Stop other sounds before playing
-            audio.play();
-        });
+        // Add event listener to play sound when button is clicked
+        btn.addEventListener('click', function(audioFile) {
+            return function() {
+                stopAllSounds(); // Stop other sounds before playing
+                audioFile.play();
+            };
+        }(audio));
 
+        // Add button to buttons div
         buttonsDiv.appendChild(btn);
-    });
-
-    // Stop button
-    const stopBtn = document.createElement("button");
-    stopBtn.classList.add("stop");
-    stopBtn.innerText = "Stop";
-
-    stopBtn.addEventListener("click", () => stopAllSounds());
-
-    buttonsDiv.appendChild(stopBtn);
-});
+    }
+}
 
 // Function to stop all sounds
 function stopAllSounds() {
